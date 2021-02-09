@@ -90,9 +90,9 @@ private:
         right = 0;
 
         right += vec[toIndex(index + 1)] - vec[index];
-        //right += vec[toIndex(index + 2)] - vec[index];
+        right += vec[toIndex(index + 2)] - vec[index];
         left += vec[toIndex(index - 1)] - vec[index];
-        //left += vec[toIndex(index - 2)] - vec[index];
+        left += vec[toIndex(index - 2)] - vec[index];
 
     }
 
