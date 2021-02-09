@@ -24,27 +24,61 @@ private:
         return count - num;
     }
 
-    int getIndexMaxElement()
+    int getDistance(int a, int b)
+    {
+        int result = abs(b - a);
+
+        if(count / 2 < result)
+        {
+            result = count - result;
+        }
+
+        return result;
+    }
+
+    int getIndexMaxElement(int position)
     {
         int res = 0;
+        int distance = getDistance(position, 0);
         for(int i = 1;i < count; ++i)
         {
-            if(vec[i] > vec[res])
+             if(vec[i] > vec[res])
             {
                 res = i;
+                distance = getDistance(position, i);
+            }
+            if(vec[i] == vec[res])
+            {
+                int dist = getDistance(i, position);
+                if(dist < distance)
+                {
+                    res = i;
+                    distance = dist;
+                }
             }
         }
         return res;
     }
 
-    int getIndexMinElement()
+    int getIndexMinElement(int position)
     {
         int res = 0;
+        int distance = getDistance(position, 0);
         for(int i = 1;i < count; ++i)
         {
             if(vec[i] < vec[res])
             {
                 res = i;
+                distance = getDistance(position, i);
+            }
+            if(vec[i] == vec[res])
+            {
+                int dist = getDistance(i, position);
+                if(dist < distance)
+                {
+                    res = i;
+                    distance = dist;
+                }
             }
         }
         return res;
@@ -56,13 +90,10 @@ private:
         right = 0;
 
         right += vec[toIndex(index + 1)] - vec[index];
-        right += vec[toIndex(index + 2)] - vec[index];
-        right += vec[toIndex(index + 3)] - vec[index];
-        right += vec[toIndex(index + 4)] - vec[index];
+        //right += vec[toIndex(index + 2)] - vec[index];
         left += vec[toIndex(index - 1)] - vec[index];
-        left += vec[toIndex(index - 2)] - vec[index];
-        left += vec[toIndex(index - 3)] - vec[index];
-        left += vec[toIndex(index - 4)] - vec[index];
+        //left += vec[toIndex(index - 2)] - vec[index];
+
     }
 
     bool isBalance()
@@ -115,8 +146,11 @@ public:
         
         while(!isBalance())
         {
-            maxElIdx = getIndexMaxElement();
-            minElIdx = getIndexMinElement();
+            
+            maxElIdx = getIndexMaxElement(position);
+            minElIdx = getIndexMinElement(maxElIdx);
+            maxElIdx = getIndexMaxElement(minElIdx);
+
             if(abs(vec[minElIdx] - avarage) > abs(vec[maxElIdx] - avarage))
             {
                 position = minElIdx;
@@ -133,16 +167,17 @@ public:
 
             getForces(position, left, right);
 
+            
             if(left == right)
             {
                 int agIdx = 0;
                 if(isMax)
                 {
-                    agIdx = getIndexMinElement();
+                    agIdx = getIndexMinElement(position);
                 }
                 else
                 {
-                    agIdx = getIndexMaxElement();
+                    agIdx = getIndexMaxElement(position);
                 }
                 distance = abs(position - agIdx);
                 force = sign(left);
@@ -150,11 +185,19 @@ public:
                 {
                     if(position > agIdx)
                     {
+                        while(vec[position] == vec[toIndex(position - 1)])
+                        {
+                            position = toIndex(position - 1);
+                        }
                         vec[position] += force;
                         vec[toIndex(position - 1)] -= force;
                     }
                     else
                     {
+                         while(vec[position] == vec[toIndex(position + 1)])
+                        {
+                            position = toIndex(position + 1);
+                        }
                         vec[position] += force;
                         vec[toIndex(position + 1)] -= force;
                     }
@@ -163,11 +206,19 @@ public:
                 {
                     if(position > agIdx)
                     {
+                        while(vec[position] == vec[toIndex(position + 1)])
+                        {
+                            position = toIndex(position + 1);
+                        }
                         vec[position] += force;
                         vec[toIndex(position + 1)] -= force;
                     }
                     else
                     {
+                        while(vec[position] == vec[toIndex(position - 1)])
+                        {
+                            position = toIndex(position - 1);
+                        }
                         vec[position] += force;
                         vec[toIndex(position - 1)] -= force;
                     }
@@ -203,7 +254,7 @@ public:
 
 int main()
 {
-    size_t count = 0;
+   size_t count = 0;
     std::cin>>count;
     std::vector<int> vec;
     int k;
